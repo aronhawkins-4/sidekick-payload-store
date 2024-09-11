@@ -1,7 +1,8 @@
+'use client'
 import type { StaticImageData } from 'next/image'
 
 import { cn } from 'src/utilities/cn'
-import React from 'react'
+import React, { useEffect } from 'react'
 import RichText from '@/components/RichText'
 
 import type { Page } from '@/payload-types'
@@ -27,9 +28,14 @@ export const MediaBlock: React.FC<Props> = (props) => {
     imgClassName,
     media,
     position = 'default',
+    show_caption,
     staticImage,
     disableInnerContainer,
   } = props
+
+  useEffect(() => {
+    console.log(props)
+  }, [])
 
   let caption
   if (media && typeof media === 'object') caption = media.caption
@@ -52,7 +58,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
       {position === 'default' && (
         <Media imgClassName={cn('rounded', imgClassName)} resource={media} src={staticImage} />
       )}
-      {caption && (
+      {caption && show_caption && (
         <div
           className={cn(
             'mt-6',

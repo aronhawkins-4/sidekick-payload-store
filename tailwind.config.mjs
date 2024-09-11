@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -27,18 +28,18 @@ export default {
     container: {
       center: true,
       padding: {
-        '2xl': '2rem',
-        DEFAULT: '1rem',
-        lg: '2rem',
-        md: '2rem',
-        sm: '1rem',
-        xl: '2rem',
+        '2xl': '2.5rem',
+        DEFAULT: '2.5rem',
+        lg: '2.5rem',
+        md: '2.5rem',
+        sm: '1.25rem',
+        xl: '2.5rem',
       },
       screens: {
         '2xl': '86rem',
-        lg: '64rem',
-        md: '48rem',
-        sm: '40rem',
+        // lg: '64rem',
+        // md: '48rem',
+        // sm: '40rem',
         xl: '80rem',
       },
     },

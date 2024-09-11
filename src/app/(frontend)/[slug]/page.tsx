@@ -12,6 +12,7 @@ import type { Page as PageType } from '@/payload-types'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { PagePreview } from './page-preview'
 
 export async function generateStaticParams() {
   const payload = await getPayloadHMR({ config: configPromise })
@@ -53,9 +54,9 @@ export default async function Page({ params: { slug = 'home' } }) {
     <article className="pt-16 pb-24">
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
-
       <RenderHero {...hero} />
       <RenderBlocks blocks={layout} />
+      {/* <PagePreview page={page} /> */}
     </article>
   )
 }

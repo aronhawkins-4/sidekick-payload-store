@@ -24,6 +24,7 @@ import Categories from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Products } from './collections/Products'
 import Users from './collections/Users'
 import { seedHandler } from './endpoints/seedHandler'
 import { Footer } from './Footer/config'
@@ -60,6 +61,9 @@ export default buildConfig({
     },
     user: Users.slug,
     livePreview: {
+      url: ({ data }) => {
+        return `${data.slug !== 'home' ? `/${data.slug}` : ''}`
+      },
       breakpoints: [
         {
           label: 'Mobile',
@@ -80,6 +84,7 @@ export default buildConfig({
           height: 900,
         },
       ],
+      collections: ['pages', 'posts', 'products'],
     },
   },
   // This config helps us configure global or default features that the other editors can inherit
@@ -90,7 +95,7 @@ export default buildConfig({
         BoldFeature(),
         ItalicFeature(),
         LinkFeature({
-          enabledCollections: ['pages', 'posts'],
+          enabledCollections: ['pages', 'posts', 'products'],
           fields: ({ defaultFields }) => {
             const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
               if ('name' in field && field.name === 'url') return false
@@ -119,7 +124,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Products, Media, Categories, Users],
   cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   endpoints: [
@@ -134,7 +139,7 @@ export default buildConfig({
   globals: [Header, Footer],
   plugins: [
     redirectsPlugin({
-      collections: ['pages', 'posts'],
+      collections: ['pages', 'posts', 'products'],
       overrides: {
         // @ts-expect-error
         fields: ({ defaultFields }) => {

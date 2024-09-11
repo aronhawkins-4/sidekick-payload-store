@@ -20,6 +20,11 @@ export const MediaBlock: Block = {
       ],
     },
     {
+      name: 'show_caption',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+    {
       name: 'media',
       type: 'upload',
       relationTo: 'media',
