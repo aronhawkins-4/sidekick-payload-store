@@ -6,6 +6,18 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CartItems".
+ */
+export type CartItems =
+  | {
+      product?: (number | null) | Product;
+      quantity?: number | null;
+      id?: string | null;
+    }[]
+  | null;
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
@@ -339,6 +351,9 @@ export interface Post {
 export interface User {
   id: number;
   name?: string | null;
+  cart?: {
+    items?: CartItems;
+  };
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -349,6 +364,31 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  price: number;
+  featured_image?: (number | null) | Media;
+  image_gallery?: (number | Media)[] | null;
+  inventory?: number | null;
+  relatedProducts?: (number | Product)[] | null;
+  category?: (number | null) | Category;
+  meta?: {
+    title?: string | null;
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -539,31 +579,6 @@ export interface Form {
     | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  featured_image?: (number | null) | Media;
-  image_gallery?: (number | Media)[] | null;
-  inventory?: number | null;
-  relatedProducts?: (number | Product)[] | null;
-  category?: (number | null) | Category;
-  meta?: {
-    title?: string | null;
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

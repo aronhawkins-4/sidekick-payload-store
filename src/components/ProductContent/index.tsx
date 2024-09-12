@@ -6,17 +6,20 @@ import { Button } from '../ui/button'
 import { Form, useForm } from 'react-hook-form'
 import { ProductForm } from '../ProductForm'
 import { Separator } from '../ui/separator'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '@/providers/Auth'
 
 export const ProductContent: React.FC<{ product: Product }> = ({ product }) => {
   const featuredImage = product.featured_image as Media
+  const { user } = useAuth()
 
   const [activeImage, setActiveImage] = useState<Media>(featuredImage)
+
   return (
     <div className="px-5 md:px-10 py-20 md:py-24 z-10 relative text-white bg-[#1d1d1d]">
-      <div className="max-w-7xl m-auto flex gap-16">
-        <div className="w-full flex gap-2">
-          <div className="flex flex-col gap-2 w-40">
+      <div className="max-w-7xl m-auto flex flex-col gap-16 sm:flex-row">
+        <div className="w-full flex flex-col-reverse sm:flex-row gap-2">
+          <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-40 max-w-full overflow-scroll">
             <button
               className="w-full h-auto aspect-square rounded-lg relative overflow-hidden"
               onClick={() => {
@@ -63,7 +66,10 @@ export const ProductContent: React.FC<{ product: Product }> = ({ product }) => {
         </div>
         <div className="w-full flex flex-col gap-10">
           <div className="flex gap-2 items-center">
-            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-600"></span>
+            </span>
             <span className="text-green-500 font-light text-lg">{product.inventory} Available</span>
           </div>
           <ProductForm product={product} />

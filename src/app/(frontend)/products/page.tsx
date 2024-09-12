@@ -5,11 +5,8 @@ import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { draftMode, headers } from 'next/headers'
 import React, { cache } from 'react'
-import type { Product } from '@/payload-types'
-import { generateMeta } from '@/utilities/generateMeta'
-import { ProductHero } from '@/heros/ProductHero'
-import { ProductContent } from '@/components/ProductContent'
-import Link from 'next/link'
+
+import { ProductArchive } from '@/components/ProductArchive'
 
 export async function generateStaticParams() {
   const payload = await getPayloadHMR({ config: configPromise })
@@ -32,14 +29,7 @@ export default async function Page({ params: { slug = '' } }) {
     <div className="">
       {/* Allows redirects for valid pages too */}
       {/* <PayloadRedirects disableNotFound url={url} /> */}
-      {products &&
-        products.map((product) => {
-          return (
-            <Link href={`/products/${product.slug}`} key={product.id}>
-              {product.title}
-            </Link>
-          )
-        })}
+      <ProductArchive products={products} />
     </div>
   )
 }

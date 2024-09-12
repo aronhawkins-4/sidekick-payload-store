@@ -8,7 +8,11 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+    require('tailwindcss-animation-delay'),
+  ],
   prefix: '',
   safelist: [
     'lg:col-span-4',
@@ -118,6 +122,18 @@ export default {
           },
         },
       }),
+    },
+    animationDelay: {
+      100: '100ms',
+      200: '200ms',
+      300: '300ms',
+      400: '400ms',
+      500: '500ms',
+      1000: '1000ms',
+      1500: '1500ms',
+      2000: '2000ms',
+      '-3000': '-3000ms',
+      '-7000': '-7000ms',
     },
   },
 }

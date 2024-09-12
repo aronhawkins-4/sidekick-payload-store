@@ -21,9 +21,9 @@ export const ProductHero: React.FC<{
     <div>
       <div className="max-w-7xl m-auto px-5 md:px-10 py-20 md:py-24 z-10 relative text-white">
         <div className="">
-          <div className="text-sm">
+          <div className=" flex flex-col gap-4">
             {category && typeof category === 'object' && (
-              <div className="flex flex-col gap-4">
+              <div className="text-sm">
                 <Breadcrumb>
                   <BreadcrumbList className="sm:gap-1 gap-1 text-lg font-light">
                     <BreadcrumbItem>
@@ -37,9 +37,9 @@ export const ProductHero: React.FC<{
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-semibold">{title}</h1>
               </div>
             )}
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-semibold">{title}</h1>
           </div>
         </div>
       </div>
