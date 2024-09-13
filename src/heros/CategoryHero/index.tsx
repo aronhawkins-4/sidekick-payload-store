@@ -12,10 +12,10 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 
-export const ProductHero: React.FC<{
-  product: Product
-}> = ({ product }) => {
-  const { category, meta: { image: metaImage } = {}, publishedAt, title } = product
+export const CategoryHero: React.FC<{
+  category: Category
+}> = ({ category }) => {
+  const { title } = category
   return (
     // <div className="relative flex items-end py-20 px-5 sm:px-10">
     <div>
@@ -30,11 +30,7 @@ export const ProductHero: React.FC<{
                       <BreadcrumbLink href="/products">Products</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink href={`/categories/${category.title.toLowerCase()}`}>
-                        {category.title}
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
+                    <BreadcrumbItem>Categories</BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
               </div>

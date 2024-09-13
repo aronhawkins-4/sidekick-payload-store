@@ -6,19 +6,19 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { draftMode, headers } from 'next/headers'
 import React, { cache } from 'react'
 
-import { ProductArchive } from '@/components/ProductArchive'
+import { ProductArchive } from '@/components/Products/ProductArchive'
 
-export async function generateStaticParams() {
-  const payload = await getPayloadHMR({ config: configPromise })
-  const products = await payload.find({
-    collection: 'products',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-  })
+// export async function generateStaticParams() {
+//   const payload = await getPayloadHMR({ config: configPromise })
+//   const products = await payload.find({
+//     collection: 'products',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//   })
 
-  return products.docs?.map(({ slug }) => slug)
-}
+//   return products.docs?.map(({ slug }) => slug)
+// }
 
 export default async function Page({ params: { slug = '' } }) {
   //   const url = '/products/'
@@ -26,7 +26,7 @@ export default async function Page({ params: { slug = '' } }) {
   //   if (!product) return <PayloadRedirects url={url} />
 
   return (
-    <div className="">
+    <div className="max-w-7xl m-auto px-5 md:px-10 py-20 md:py-24 z-10 relative text-white">
       {/* Allows redirects for valid pages too */}
       {/* <PayloadRedirects disableNotFound url={url} /> */}
       <ProductArchive products={products} />

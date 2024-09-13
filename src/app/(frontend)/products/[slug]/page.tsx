@@ -8,19 +8,19 @@ import React, { cache } from 'react'
 import type { Product } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import { ProductHero } from '@/heros/ProductHero'
-import { ProductContent } from '@/components/ProductContent'
+import { ProductContent } from '@/components/Products/ProductContent'
 
-export async function generateStaticParams() {
-  const payload = await getPayloadHMR({ config: configPromise })
-  const products = await payload.find({
-    collection: 'products',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-  })
+// export async function generateStaticParams() {
+//   const payload = await getPayloadHMR({ config: configPromise })
+//   const products = await payload.find({
+//     collection: 'products',
+//     draft: false,
+//     limit: 1000,
+//     overrideAccess: false,
+//   })
 
-  return products.docs?.map(({ slug }) => slug)
-}
+//   return products.docs?.map(({ slug }) => slug)
+// }
 
 export default async function Product({ params: { slug = '' } }) {
   const url = '/products/' + slug

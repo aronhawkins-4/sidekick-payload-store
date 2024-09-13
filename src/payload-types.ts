@@ -91,7 +91,8 @@ export interface Page {
     } | null;
     links?:
       | {
-          link: {
+          link?: {
+            label?: string | null;
             type?: ('reference' | 'custom') | null;
             newTab?: boolean | null;
             reference?: {
@@ -99,7 +100,6 @@ export interface Page {
               value: number | Page;
             } | null;
             url?: string | null;
-            label: string;
             appearance?: ('default' | 'outline') | null;
           };
           id?: string | null;
@@ -176,7 +176,8 @@ export interface CallToActionBlock {
   } | null;
   links?:
     | {
-        link: {
+        link?: {
+          label?: string | null;
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?: {
@@ -184,7 +185,6 @@ export interface CallToActionBlock {
             value: number | Page;
           } | null;
           url?: string | null;
-          label: string;
           appearance?: ('default' | 'outline') | null;
         };
         id?: string | null;
@@ -219,6 +219,7 @@ export interface ContentBlock {
         } | null;
         enableLink?: boolean | null;
         link?: {
+          label?: string | null;
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?: {
@@ -226,7 +227,6 @@ export interface ContentBlock {
             value: number | Page;
           } | null;
           url?: string | null;
-          label: string;
           appearance?: ('default' | 'outline') | null;
         };
         id?: string | null;
@@ -289,6 +289,8 @@ export interface ArchiveBlock {
 export interface Category {
   id: number;
   title: string;
+  slug?: string | null;
+  slugLock?: boolean | null;
   parent?: (number | null) | Category;
   breadcrumbs?:
     | {
@@ -666,7 +668,8 @@ export interface Header {
   id: number;
   navItems?:
     | {
-        link: {
+        link?: {
+          label?: string | null;
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?: {
@@ -674,7 +677,6 @@ export interface Header {
             value: number | Page;
           } | null;
           url?: string | null;
-          label: string;
         };
         id?: string | null;
       }[]
@@ -690,7 +692,8 @@ export interface Footer {
   id: number;
   navItems?:
     | {
-        link: {
+        link?: {
+          label?: string | null;
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?: {
@@ -698,7 +701,6 @@ export interface Footer {
             value: number | Page;
           } | null;
           url?: string | null;
-          label: string;
         };
         id?: string | null;
       }[]

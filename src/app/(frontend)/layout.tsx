@@ -15,9 +15,21 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import './globals.css'
 import { draftMode } from 'next/headers'
 import { Toaster } from '@/components/ui/toaster'
+import { SideCart } from '@/components/SideCart'
+import configPromise from '@payload-config'
+import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getMeUser } from '@/utilities/getMeUser'
+import { CartItems } from '@/payload-types'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = draftMode()
+  const payload = await getPayloadHMR({ config: configPromise })
+  const { user } = await getMeUser()
+  let initialCartItems: CartItems | undefined = undefined
+  if (user) {
+    const cartItems = user.cart?.items
+    initialCartItems = cartItems
+  }
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -31,6 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <LivePreviewListener />
           <Header />
           {children}
+          <SideCart initialItems={initialCartItems} />
           <Toaster />
           <Footer />
         </Providers>

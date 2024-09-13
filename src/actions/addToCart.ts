@@ -4,6 +4,7 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Product } from '@/payload-types'
 import { getMeUser } from '@/utilities/getMeUser'
+import { revalidatePath } from 'next/cache'
 
 export type CartItem = {
   product?: (number | null) | Product
@@ -18,14 +19,23 @@ export const addToCart = async (product: Product, quantity: number) => {
       return JSON.stringify({ ok: false, message: 'no-user', data: null })
     }
     const cartItems = user?.cart?.items ? user.cart.items : []
-    console.log(cartItems)
+    let updatedQuantity = 0
     const existingItem = cartItems.filter((item) => {
-      console.log(item)
       return (item.product as Product).id === product.id
     })
     if (existingItem && existingItem.length > 0) {
-      return JSON.stringify({ ok: true, message: 'item-exists', data: null })
+      if ((existingItem.at(0)?.quantity || 0) + quantity > (product?.inventory || 0)) {
+        return JSON.stringify({
+          ok: false,
+          message: 'insufficient-inventory',
+          data: {
+            available_inventory: (product?.inventory || 0) - (existingItem.at(0)?.quantity || 0),
+          },
+        })
+      }
+      updatedQuantity = (existingItem.at(0)?.quantity || 0) + quantity
     }
+    console.log(existingItem)
     const payload = await getPayloadHMR({ config: configPromise })
 
     const updatedUser = await payload.update({
@@ -33,21 +43,34 @@ export const addToCart = async (product: Product, quantity: number) => {
       id: user.id,
       data: {
         cart: {
-          items: [
-            ...cartItems.map((item) => {
-              const formattedItem = {
-                id: item.id,
-                product: (item?.product as Product).id,
-                quantity: item.quantity,
-              }
-              return formattedItem
-            }),
-            { product: product.id, quantity },
-          ],
+          items:
+            existingItem && existingItem.length > 0
+              ? [
+                  ...cartItems.map((item) => {
+                    const formattedItem = {
+                      id: item.id,
+                      product: (item?.product as Product).id,
+                      quantity: item.id === existingItem[0].id ? updatedQuantity : item.quantity,
+                    }
+                    return formattedItem
+                  }),
+                ]
+              : [
+                  ...cartItems.map((item) => {
+                    const formattedItem = {
+                      id: item.id,
+                      product: (item?.product as Product).id,
+                      quantity: item.quantity,
+                    }
+                    return formattedItem
+                  }),
+                  { product: product.id, quantity },
+                ],
         },
       },
     })
     if (updatedUser) {
+      revalidatePath('/', 'layout')
       return JSON.stringify({ ok: true, message: 'success', data: updatedUser.cart })
     }
   } catch (error: any) {

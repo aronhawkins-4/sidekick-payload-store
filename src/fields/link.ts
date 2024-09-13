@@ -1,5 +1,5 @@
 import type { Field } from 'payload'
-
+import { icons } from 'lucide-react'
 import deepMerge from '@/utilities/deepMerge'
 
 export type LinkAppearances = 'default' | 'outline'
@@ -14,7 +14,6 @@ export const appearanceOptions: Record<LinkAppearances, { label: string; value: 
     value: 'outline',
   },
 }
-
 type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
@@ -29,6 +28,15 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       hideGutter: true,
     },
     fields: [
+      {
+        name: 'label',
+        type: 'text',
+        admin: {
+          width: '50%',
+        },
+        label: 'Label',
+        // required: true,
+      },
       {
         type: 'row',
         fields: [
@@ -51,6 +59,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
               },
             ],
           },
+
           {
             name: 'newTab',
             type: 'checkbox',
@@ -73,6 +82,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       type: 'relationship',
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'reference',
+        width: '100%',
       },
       label: 'Document to link to',
       maxDepth: 1,
@@ -84,37 +94,83 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       type: 'text',
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'custom',
+        width: '100%',
       },
       label: 'Custom URL',
       required: true,
     },
   ]
 
+  // const displayTypes: Field[] = [
+  //   {
+  //     name: 'label',
+  //     type: 'text',
+  //     admin: {
+  //       width: '50%',
+  //       condition: (data, siblingData) => {
+  //         console.log(siblingData)
+  //         return siblingData?.display === 'text'
+  //       },
+  //     },
+  //     label: 'Label',
+  //     // required: true,
+  //   },
+  //   {
+  //     name: 'icon',
+  //     type: 'select',
+  //     options: iconNames.map((iconName) => {
+  //       return { value: iconName.toLowerCase(), label: iconName }
+  //     }),
+
+  //     admin: {
+  //       width: '50%',
+  //       condition: (data, siblingData) => {
+  //         console.log(siblingData)
+  //         return siblingData?.display === 'icon'
+  //       },
+  //     },
+  //     label: 'Icon',
+  //     // required: true,
+  //   },
+  //   // IconField(),
+  // ]
+
   if (!disableLabel) {
     linkTypes.map((linkType) => ({
       ...linkType,
       admin: {
         ...linkType.admin,
-        width: '50%',
       },
     }))
-
     linkResult.fields.push({
       type: 'row',
-      fields: [
-        ...linkTypes,
-        {
-          name: 'label',
-          type: 'text',
-          admin: {
-            width: '50%',
-          },
-          label: 'Label',
-          required: true,
-        },
-      ],
+      fields: [...linkTypes],
     })
+    // const display: Field = {
+    //   name: 'display',
+    //   type: 'radio',
+    //   admin: {
+    //     layout: 'horizontal',
+    //     width: '50%',
+    //   },
+    //   defaultValue: 'text',
+    //   options: [
+    //     {
+    //       label: 'Text',
+    //       value: 'text',
+    //     },
+    //     {
+    //       label: 'Icon',
+    //       value: 'icon',
+    //     },
+    //   ],
+    // }
+    // linkResult.fields.push({
+    //   type: 'row',
+    //   fields: [display, ...displayTypes],
+    // })
   } else {
+    // linkResult.fields = [...linkResult.fields, ...linkTypes, display, ...displayTypes]
     linkResult.fields = [...linkResult.fields, ...linkTypes]
   }
 
