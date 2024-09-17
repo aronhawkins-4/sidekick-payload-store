@@ -4,7 +4,7 @@ import { authenticated } from '../../access/authenticated'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { CartItems, Product } from '@/payload-types'
-import { CartItem } from '@/actions/addToCart'
+
 const Users: CollectionConfig = {
   slug: 'users',
   access: {

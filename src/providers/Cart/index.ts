@@ -58,9 +58,21 @@ export const useCart = create<CartState>()(
               : [],
           })),
       }),
+
       {
         name: 'cart',
       },
     ),
   ),
 )
+
+export const useTotal = () =>
+  useCart((state) => {
+    const total = state.cartItems?.reduce((total, cartItem) => {
+      return (total += (cartItem.product as Product).price * (cartItem.quantity || 0))
+    }, 0)
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(total || 0)
+  })

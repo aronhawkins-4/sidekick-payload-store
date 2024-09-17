@@ -1,36 +1,30 @@
+'use client'
 import { CartItems, Category, Media, Product } from '@/payload-types'
 import Link from 'next/link'
 import Image from 'next/image'
 
 import React, { useEffect, useState } from 'react'
-import { addToCart } from '@/actions/addToCart'
+
 import { Trash2 } from 'lucide-react'
 import { removeFromCart } from '@/actions/removeFromCart'
 import { useToast } from '@/components/ui/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { CartItem } from '@/providers/Cart'
+import { CartItem, useCart } from '@/providers/Cart'
 
 interface SideCartItemProps {
   cartItem: CartItem
-  cartItems: CartItems
-  setCartItems: (cartItems: CartItems) => void
-  removeItem: (productId: number) => void
 }
 
 type SideCartItemFormData = {
   cartItemProductID: string
 }
 
-export const SideCartItem: React.FC<SideCartItemProps> = ({
-  cartItem,
-  cartItems,
-  setCartItems,
-  removeItem,
-}) => {
+export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem }) => {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
+  const { removeItem } = useCart()
   const {
     register,
     handleSubmit,

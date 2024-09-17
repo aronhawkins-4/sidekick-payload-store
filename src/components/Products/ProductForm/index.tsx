@@ -4,7 +4,7 @@ import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
 import { CartItems, Product } from '@/payload-types'
 import { useToast } from '../../ui/hooks/use-toast'
-import { addToCart } from '@/actions/addToCart'
+
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/providers/Cart'

@@ -9,7 +9,9 @@ import { ProductCard } from '../Products/ProductCard'
 import { ScrollArea } from '../ui/scroll-area'
 import { SideCartItem } from './SideCartItem'
 import { Separator } from '../ui/separator'
-import { useCart } from '@/providers/Cart'
+import { useCart, useTotal } from '@/providers/Cart'
+import { Button } from '../ui/button'
+import Link from 'next/link'
 
 interface SideCartProps {
   initialItems: CartItems | undefined
@@ -18,13 +20,13 @@ interface SideCartProps {
 export const SideCart: React.FC<SideCartProps> = ({ initialItems }) => {
   const { user } = useAuth()
   const { cartItems, setCartItems, removeItem } = useCart()
+  const total = useTotal()
 
-  useEffect(() => {
-    if (initialItems) {
-      setCartItems(initialItems)
-    }
-    console.log(cartItems)
-  }, [initialItems])
+  // useEffect(() => {
+  //   if (initialItems) {
+  //     setCartItems(initialItems)
+  //   }
+  // }, [initialItems])
 
   return (
     <>
@@ -52,18 +54,27 @@ export const SideCart: React.FC<SideCartProps> = ({ initialItems }) => {
                       key={item.id || (item.product as Product).id}
                       className="flex flex-col gap-4"
                     >
-                      <SideCartItem
-                        cartItem={item}
-                        cartItems={cartItems || []}
-                        setCartItems={setCartItems}
-                        removeItem={removeItem}
-                      />
+                      <SideCartItem cartItem={item} />
                       {index !== cartItems.length - 1 && <Separator />}
                     </div>
                   )
                 })}
             </div>
           </ScrollArea>
+          <Separator />
+          <div className="text-lg font-semibold">
+            Total: <span className="text-base font-normal">{total}</span>
+          </div>
+          <div className="flex justify-stretch items-center gap-2">
+            <Link href="/cart" className="w-full">
+              <Button className="w-full">Cart</Button>
+            </Link>
+            <Link href="" className="w-full">
+              <Button variant={'outline'} className="w-full">
+                Checkout
+              </Button>
+            </Link>
+          </div>
         </SheetContent>
       </Sheet>
     </>
