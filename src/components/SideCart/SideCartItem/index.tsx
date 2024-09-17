@@ -2,24 +2,32 @@ import { CartItems, Category, Media, Product } from '@/payload-types'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import React, { useState } from 'react'
-import { addToCart, CartItem } from '@/actions/addToCart'
+import React, { useEffect, useState } from 'react'
+import { addToCart } from '@/actions/addToCart'
 import { Trash2 } from 'lucide-react'
 import { removeFromCart } from '@/actions/removeFromCart'
 import { useToast } from '@/components/ui/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { CartItem } from '@/providers/Cart'
 
 interface SideCartItemProps {
   cartItem: CartItem
+  cartItems: CartItems
   setCartItems: (cartItems: CartItems) => void
+  removeItem: (productId: number) => void
 }
 
 type SideCartItemFormData = {
-  cartItemID: string
+  cartItemProductID: string
 }
 
-export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem, setCartItems }) => {
+export const SideCartItem: React.FC<SideCartItemProps> = ({
+  cartItem,
+  cartItems,
+  setCartItems,
+  removeItem,
+}) => {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
@@ -33,31 +41,39 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem, setCartIte
   const onSubmit = handleSubmit(async (data) => {
     try {
       setIsSubmitting(true)
-      const cartItemId = data.cartItemID
+      const cartItemProductId = data.cartItemProductID
 
-      if (cartItemId) {
-        const response = await removeFromCart(cartItemId)
-        if (response) {
-          const parsedResponse = JSON.parse(response)
-          console.log(parsedResponse)
-          if (parsedResponse.ok && parsedResponse.message === 'success' && parsedResponse.data) {
-            toast({
-              title: 'Removed from cart!',
-              description: `Removed ${product?.title} from your cart.`,
-            })
-            setCartItems(parsedResponse.data)
-          } else if (!parsedResponse.ok && parsedResponse.message === 'no-user') {
-            toast({
-              title: 'You must be logged in to add items to your cart.',
-              variant: 'destructive',
-            })
-          } else {
-            toast({
-              title: 'Something went wrong.',
-              variant: 'destructive',
-            })
-          }
-        }
+      if (cartItemProductId) {
+        removeItem(Number(cartItemProductId))
+        toast({
+          title: 'Removed from cart!',
+          description: `Removed ${product?.title} from your cart.`,
+        })
+        // const response = await removeFromCart(cartItemProductId)
+        // if (response) {
+        //   const parsedResponse = JSON.parse(response)
+        //   console.log(parsedResponse)
+        //   if (parsedResponse.ok && parsedResponse.message === 'success' && parsedResponse.data) {
+        //     switch (parsedResponse.message) {
+        //       case 'no-user':
+        //       case 'success':
+        //         toast({
+        //           title: 'Removed from cart!',
+        //           description: `Removed ${product?.title} from your cart.`,
+        //         })
+        //         const updatedCartItems = cartItems?.filter((cartItem) => {
+        //           return (cartItem.product as Product)?.id !== product.id
+        //         })
+        //         setCartItems(updatedCartItems || [])
+        //         break
+        //     }
+        //   } else {
+        //     toast({
+        //       title: 'Something went wrong.',
+        //       variant: 'destructive',
+        //     })
+        //   }
+        // }
       }
       setIsSubmitting(false)
     } catch (error: any) {
@@ -69,6 +85,10 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem, setCartIte
     }
   })
 
+  useEffect(() => {
+    console.log(product)
+  }, [])
+
   if (!cartItem.product) {
     return
   }
@@ -77,9 +97,9 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem, setCartIte
     <div className="flex gap-6 items-center">
       <div className="relative aspect-square rounded-md overflow-hidden w-16">
         <Image
-          src={(product.featured_image as Media).url || ''}
+          src={(product.featured_image as Media)?.url || ''}
           fill
-          alt={(product.featured_image as Media).alt || ''}
+          alt={(product.featured_image as Media)?.alt || ''}
           className="object-cover"
         />
       </div>
@@ -92,7 +112,11 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem, setCartIte
         )}
       </div>
       <form onSubmit={onSubmit} className="justify-self-end ml-auto">
-        <input type="hidden" {...register('cartItemID')} value={cartItem.id || undefined} />
+        <input
+          type="hidden"
+          {...register('cartItemProductID')}
+          value={(cartItem.product as Product)?.id || undefined}
+        />
         <button type="submit">
           <Trash2 size={16} />
         </button>

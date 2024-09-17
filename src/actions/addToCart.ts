@@ -2,31 +2,47 @@
 
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { Product } from '@/payload-types'
+import { CartItems, Product } from '@/payload-types'
 import { getMeUser } from '@/utilities/getMeUser'
 import { revalidatePath } from 'next/cache'
 
-export type CartItem = {
-  product?: (number | null) | Product
-  quantity?: number | null
-  id?: string | null
-}
-
-export const addToCart = async (product: Product, quantity: number) => {
+export const addToCart = async (
+  product: Product,
+  quantity: number,
+  cartItems: CartItems | undefined,
+) => {
   try {
     const { user } = await getMeUser()
-    if (!user) {
-      return JSON.stringify({ ok: false, message: 'no-user', data: null })
+    let updatedCartItems: CartItems | undefined = []
+    if (cartItems) {
+      cartItems.map((cartItem) => {
+        if ((cartItem.product as Product)?.id === product?.id) {
+          updatedCartItems?.push({ ...cartItem, quantity: (cartItem?.quantity || 0) + quantity })
+        } else {
+          updatedCartItems?.push({ product: product, quantity: quantity })
+        }
+      })
     }
-    const cartItems = user?.cart?.items ? user.cart.items : []
+    if (!user) {
+      console.log(updatedCartItems)
+      return JSON.stringify({
+        ok: true,
+        message: 'no-user',
+        data:
+          updatedCartItems && updatedCartItems.length > 0
+            ? [...updatedCartItems]
+            : [{ product, quantity }],
+      })
+    }
+    const payloadCartItems = user?.cart?.items ? user.cart.items : []
     let updatedQuantity = 0
-    const existingItem = cartItems.filter((item) => {
+    const existingItem = payloadCartItems.filter((item) => {
       return (item.product as Product).id === product.id
     })
     if (existingItem && existingItem.length > 0) {
       if ((existingItem.at(0)?.quantity || 0) + quantity > (product?.inventory || 0)) {
         return JSON.stringify({
-          ok: false,
+          ok: true,
           message: 'insufficient-inventory',
           data: {
             available_inventory: (product?.inventory || 0) - (existingItem.at(0)?.quantity || 0),
@@ -35,7 +51,6 @@ export const addToCart = async (product: Product, quantity: number) => {
       }
       updatedQuantity = (existingItem.at(0)?.quantity || 0) + quantity
     }
-    console.log(existingItem)
     const payload = await getPayloadHMR({ config: configPromise })
 
     const updatedUser = await payload.update({
@@ -46,7 +61,7 @@ export const addToCart = async (product: Product, quantity: number) => {
           items:
             existingItem && existingItem.length > 0
               ? [
-                  ...cartItems.map((item) => {
+                  ...payloadCartItems.map((item) => {
                     const formattedItem = {
                       id: item.id,
                       product: (item?.product as Product).id,
@@ -56,7 +71,7 @@ export const addToCart = async (product: Product, quantity: number) => {
                   }),
                 ]
               : [
-                  ...cartItems.map((item) => {
+                  ...payloadCartItems.map((item) => {
                     const formattedItem = {
                       id: item.id,
                       product: (item?.product as Product).id,
@@ -70,7 +85,7 @@ export const addToCart = async (product: Product, quantity: number) => {
       },
     })
     if (updatedUser) {
-      revalidatePath('/', 'layout')
+      // revalidatePath('/', 'layout')
       return JSON.stringify({ ok: true, message: 'success', data: updatedUser.cart })
     }
   } catch (error: any) {

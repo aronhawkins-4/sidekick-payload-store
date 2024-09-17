@@ -46,7 +46,7 @@ export const removeFromCart = async (cartItemId: string) => {
       },
     })
     if (updatedUser) {
-      revalidatePath('/', 'layout')
+      // revalidatePath('/', 'layout')
       return JSON.stringify({ ok: true, message: 'success', data: updatedUser.cart?.items })
     }
   } catch (error: any) {
