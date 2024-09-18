@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-import type { Header } from '@/payload-types'
+import type { Header, Media } from '@/payload-types'
 
-import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
+import Image from 'next/image'
 
 interface HeaderClientProps {
   header: Header
@@ -34,9 +34,20 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
       className="container relative z-20 py-8 flex justify-between"
       {...(theme ? { 'data-theme': theme } : {})}
     >
-      <Link href="/">
-        <Logo />
-      </Link>
+      {header.logo && typeof header.logo === 'object' && (
+        <Link href="/" className="relative w-48">
+          <Image
+            src={(header.logo as Media).url || ''}
+            width={100}
+            height={100}
+            alt={(header.logo as Media).alt || ''}
+            placeholder="blur"
+            blurDataURL={(header.logo as Media).url || ''}
+            className="w-full object-contain h-auto"
+          />
+        </Link>
+      )}
+
       <HeaderNav header={header} />
     </header>
   )

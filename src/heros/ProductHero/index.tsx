@@ -1,7 +1,7 @@
 import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
 
-import type { Post, Product, Category } from '@/payload-types'
+import type { Product, Category } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import {

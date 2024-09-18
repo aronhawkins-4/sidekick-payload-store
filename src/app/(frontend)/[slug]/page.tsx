@@ -14,21 +14,21 @@ import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { PagePreview } from './page-preview'
 
-// export async function generateStaticParams() {
-//   const payload = await getPayloadHMR({ config: configPromise })
-//   const pages = await payload.find({
-//     collection: 'pages',
-//     draft: false,
-//     limit: 1000,
-//     overrideAccess: false,
-//   })
+export async function generateStaticParams() {
+  const payload = await getPayloadHMR({ config: configPromise })
+  const pages = await payload.find({
+    collection: 'pages',
+    draft: false,
+    limit: 1000,
+    overrideAccess: false,
+  })
 
-//   return pages.docs
-//     ?.filter((doc) => {
-//       return doc.slug !== 'home'
-//     })
-//     .map(({ slug }) => slug)
-// }
+  return pages.docs
+    ?.filter((doc) => {
+      return doc.slug !== 'home'
+    })
+    .map(({ slug }) => slug)
+}
 
 export default async function Page({ params: { slug = 'home' } }) {
   const url = '/' + slug

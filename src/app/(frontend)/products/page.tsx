@@ -8,17 +8,17 @@ import React, { cache } from 'react'
 
 import { ProductArchive } from '@/components/Products/ProductArchive'
 
-// export async function generateStaticParams() {
-//   const payload = await getPayloadHMR({ config: configPromise })
-//   const products = await payload.find({
-//     collection: 'products',
-//     draft: false,
-//     limit: 1000,
-//     overrideAccess: false,
-//   })
+export async function generateStaticParams() {
+  const payload = await getPayloadHMR({ config: configPromise })
+  const products = await payload.find({
+    collection: 'products',
+    draft: false,
+    limit: 1000,
+    overrideAccess: false,
+  })
 
-//   return products.docs?.map(({ slug }) => slug)
-// }
+  return products.docs?.map(({ slug }) => slug)
+}
 
 export default async function Page({ params: { slug = '' } }) {
   //   const url = '/products/'

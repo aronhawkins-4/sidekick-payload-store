@@ -37,21 +37,7 @@ const columnData = [
   },
 ]
 
-export default async function Page({ params: { slug = '' } }) {
-  //   const url = '/products/'
-  // const products = await queryProducts()
-  const { user } = await getMeUser()
-  const cartItems = user.cart?.items
-  const total = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(
-    cartItems?.reduce((total, cartItem) => {
-      return (total += (cartItem.product as Product).price * (cartItem.quantity || 0))
-    }, 0) || 0,
-  )
-  //   if (!product) return <PayloadRedirects url={url} />
-
+export default async function Page({ params: { slug = 'cart' } }) {
   return (
     <div className="max-w-7xl m-auto px-5 md:px-10 py-20 md:py-24 z-10 relative text-white">
       <CartTable />

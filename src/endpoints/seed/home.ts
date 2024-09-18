@@ -10,8 +10,8 @@ export const home: RequiredDataFromCollectionSlug<'pages'> = {
         link: {
           type: 'custom',
           appearance: 'default',
-          label: 'All posts',
-          url: '/posts',
+          label: 'All products',
+          url: '/products',
         },
       },
       {
@@ -202,7 +202,7 @@ export const home: RequiredDataFromCollectionSlug<'pages'> = {
                       format: 0,
                       mode: 'normal',
                       style: '',
-                      text: "Manage this site's pages and posts from the ",
+                      text: "Manage this site's pages and products from the ",
                       version: 1,
                     },
                     {
@@ -523,7 +523,7 @@ export const home: RequiredDataFromCollectionSlug<'pages'> = {
                   format: 0,
                   mode: 'normal',
                   style: '',
-                  text: 'Recent posts',
+                  text: 'Recent products',
                   version: 1,
                 },
               ],
@@ -542,7 +542,7 @@ export const home: RequiredDataFromCollectionSlug<'pages'> = {
                   format: 0,
                   mode: 'normal',
                   style: '',
-                  text: 'The posts below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
+                  text: 'The products below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or products can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
                   version: 1,
                 },
               ],
@@ -560,7 +560,7 @@ export const home: RequiredDataFromCollectionSlug<'pages'> = {
         },
       },
       populateBy: 'collection',
-      relationTo: 'posts',
+      relationTo: 'products',
     },
     {
       blockName: 'CTA',
@@ -570,8 +570,8 @@ export const home: RequiredDataFromCollectionSlug<'pages'> = {
           link: {
             type: 'custom',
             appearance: 'default',
-            label: 'All posts',
-            url: '/posts',
+            label: 'All products',
+            url: '/products',
           },
         },
       ],

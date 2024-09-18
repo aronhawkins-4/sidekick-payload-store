@@ -20,7 +20,9 @@ interface SideCartProps {
 export const SideCart: React.FC<SideCartProps> = ({ initialItems }) => {
   const { user } = useAuth()
   const { cartItems, setCartItems, removeItem } = useCart()
+
   const total = useTotal()
+  const [isOpen, setIsOpen] = useState(false)
 
   // useEffect(() => {
   //   if (initialItems) {
@@ -30,7 +32,7 @@ export const SideCart: React.FC<SideCartProps> = ({ initialItems }) => {
 
   return (
     <>
-      <Sheet>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger className="fixed bottom-8 right-8 p-4 rounded-full bg-[#dc3f35] z-50">
           <ShoppingBag size={32} />
           {cartItems && cartItems.length > 0 && (
@@ -66,7 +68,7 @@ export const SideCart: React.FC<SideCartProps> = ({ initialItems }) => {
             Total: <span className="text-base font-normal">{total}</span>
           </div>
           <div className="flex justify-stretch items-center gap-2">
-            <Link href="/cart" className="w-full">
+            <Link href="/cart" className="w-full" onClick={() => setIsOpen(false)}>
               <Button className="w-full">Cart</Button>
             </Link>
             <Link href="" className="w-full">
