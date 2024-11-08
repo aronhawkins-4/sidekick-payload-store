@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { draftMode, headers } from 'next/headers'
@@ -37,7 +36,8 @@ const columnData = [
   },
 ]
 
-export default async function Page({ params: { slug = 'cart' } }) {
+export default async function Page({ params }) {
+  const { slug = 'cart' } = await params
   return (
     <div className="max-w-7xl m-auto px-5 md:px-10 py-20 md:py-24 z-10 relative text-white">
       <CartTable />
@@ -56,7 +56,7 @@ export default async function Page({ params: { slug = 'cart' } }) {
 // }
 
 const queryProducts = cache(async () => {
-  const { isEnabled: draft } = draftMode()
+  const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayloadHMR({ config: configPromise })
   const result = await payload.find({

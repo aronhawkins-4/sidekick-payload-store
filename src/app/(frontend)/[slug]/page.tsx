@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { draftMode } from 'next/headers'
@@ -13,6 +12,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import { PagePreview } from './page-preview'
+import { notFound } from 'next/navigation'
 
 export async function generateStaticParams() {
   const payload = await getPayloadHMR({ config: configPromise })
@@ -30,7 +30,8 @@ export async function generateStaticParams() {
     .map(({ slug }) => slug)
 }
 
-export default async function Page({ params: { slug = 'home' } }) {
+export default async function Page({ params }) {
+  const { slug = 'home' } = await params
   const url = '/' + slug
 
   let page: PageType | null
@@ -41,27 +42,23 @@ export default async function Page({ params: { slug = 'home' } }) {
 
   // Remove this code once your website is seeded
   if (!page) {
-    page = homeStatic
-  }
-
-  if (!page) {
-    return <PayloadRedirects url={url} />
+    // page = homeStatic
+    notFound()
   }
 
   const { hero, layout } = page
 
   return (
-    <div className="pt-16 pb-24">
+    <div>
       {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
       <RenderHero {...hero} />
       <RenderBlocks blocks={layout} />
-      {/* <PagePreview page={page} /> */}
     </div>
   )
 }
 
-export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const { slug = 'home' } = await params
   const page = await queryPageBySlug({
     slug,
   })
@@ -70,7 +67,7 @@ export async function generateMetadata({ params: { slug = 'home' } }): Promise<M
 }
 
 const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = draftMode()
+  const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayloadHMR({ config: configPromise })
 

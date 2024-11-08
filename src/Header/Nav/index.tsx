@@ -8,11 +8,11 @@ import { CMSLink } from '@/components/Link'
 
 export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   const navItems = header?.navItems || []
-
+  console.log(navItems)
   return (
     <nav className="flex gap-3 items-center">
       {navItems.map(({ link }, i) => {
-        return <CMSLink key={i} {...link} appearance="link" />
+        return <CMSLink key={i} {...link} appearance={link?.appearance || 'default'} />
       })}
     </nav>
   )

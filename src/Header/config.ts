@@ -18,11 +18,7 @@ export const Header: GlobalConfig = {
     {
       name: 'navItems',
       type: 'array',
-      fields: [
-        link({
-          // appearances: true,
-        }),
-      ],
+      fields: [link()],
       maxRows: 6,
     },
   ],

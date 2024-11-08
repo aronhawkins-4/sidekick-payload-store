@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { draftMode, headers } from 'next/headers'
@@ -22,16 +21,14 @@ import { ProductContent } from '@/components/Products/ProductContent'
 //   return products.docs?.map(({ slug }) => slug)
 // }
 
-export default async function Product({ params: { slug = '' } }) {
+export default async function Product({ params }) {
+  const { slug = '' } = await params
   const url = '/products/' + slug
   const product = await queryProductBySlug({ slug })
-
-  if (!product) return <PayloadRedirects url={url} />
 
   return (
     <div className="">
       {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
       <ProductHero product={product} />
       <ProductContent product={product} />
     </div>
@@ -49,7 +46,7 @@ export async function generateMetadata({
 }
 
 const queryProductBySlug = cache(async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = draftMode()
+  const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayloadHMR({ config: configPromise })
 

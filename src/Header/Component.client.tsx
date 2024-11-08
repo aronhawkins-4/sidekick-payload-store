@@ -38,7 +38,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ header }) => {
         <Link href="/" className="relative w-48">
           <Image
             src={(header.logo as Media).url || ''}
-            width={100}
+            width={196}
             height={100}
             alt={(header.logo as Media).alt || ''}
             placeholder="blur"

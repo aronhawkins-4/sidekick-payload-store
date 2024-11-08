@@ -6,20 +6,21 @@ import { Product } from '@/payload-types'
 import { getMeUser } from '@/utilities/getMeUser'
 import { revalidatePath } from 'next/cache'
 
-export const removeFromCart = async (cartItemId: string) => {
+export const removeFromCart = async (cartItemProductId: number) => {
   try {
     const { user } = await getMeUser()
     if (!user) {
-      return JSON.stringify({ ok: false, message: 'no-user', data: null })
+      return { ok: false, message: 'No user', data: null }
     }
     const cartItems = user?.cart?.items ? user.cart.items : []
+    console.log(cartItemProductId)
     console.log(cartItems)
     const existingItem = cartItems.filter((item) => {
       console.log(item)
-      return item.id === cartItemId
+      return (item?.product as Product)?.id === cartItemProductId
     })
     if (!existingItem) {
-      return JSON.stringify({ ok: false, message: 'item-not-found', data: null })
+      return { ok: false, message: 'Item not found', data: null }
     }
     const payload = await getPayloadHMR({ config: configPromise })
 
@@ -31,7 +32,7 @@ export const removeFromCart = async (cartItemId: string) => {
           items: [
             ...cartItems
               .filter((item) => {
-                return item.id !== cartItemId
+                return (item?.product as Product)?.id !== cartItemProductId
               })
               .map((item) => {
                 const formattedItem = {
@@ -47,10 +48,10 @@ export const removeFromCart = async (cartItemId: string) => {
     })
     if (updatedUser) {
       // revalidatePath('/', 'layout')
-      return JSON.stringify({ ok: true, message: 'success', data: updatedUser.cart?.items })
+      return { ok: true, message: 'success', data: updatedUser.cart?.items }
     }
   } catch (error: any) {
     console.log(error)
-    return JSON.stringify({ ok: false, message: error.message, data: null })
+    return { ok: false, message: error.message, data: null }
   }
 }

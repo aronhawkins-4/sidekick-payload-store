@@ -1,6 +1,6 @@
-import { withPayload } from '@payloadcms/next/withPayload'
+import withPayload from '@payloadcms/next/withPayload'
 
-import redirects from './redirects.js'
+// import redirects from './redirects.js'
 
 const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 
@@ -19,7 +19,7 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  redirects,
+  // redirects,
 }
 
 export default withPayload(nextConfig)

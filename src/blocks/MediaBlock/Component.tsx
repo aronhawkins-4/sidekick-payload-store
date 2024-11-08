@@ -33,10 +33,6 @@ export const MediaBlock: React.FC<Props> = (props) => {
     disableInnerContainer,
   } = props
 
-  useEffect(() => {
-    console.log(props)
-  }, [])
-
   let caption
   if (media && typeof media === 'object') caption = media.caption
 

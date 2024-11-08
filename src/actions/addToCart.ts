@@ -25,14 +25,14 @@ export const addToCart = async (
     }
     if (!user) {
       console.log(updatedCartItems)
-      return JSON.stringify({
-        ok: true,
-        message: 'no-user',
+      return {
+        ok: false,
+        message: 'No user',
         data:
           updatedCartItems && updatedCartItems.length > 0
             ? [...updatedCartItems]
             : [{ product, quantity }],
-      })
+      }
     }
     const payloadCartItems = user?.cart?.items ? user.cart.items : []
     let updatedQuantity = 0
@@ -41,13 +41,13 @@ export const addToCart = async (
     })
     if (existingItem && existingItem.length > 0) {
       if ((existingItem.at(0)?.quantity || 0) + quantity > (product?.inventory || 0)) {
-        return JSON.stringify({
-          ok: true,
-          message: 'insufficient-inventory',
+        return {
+          ok: false,
+          message: 'Insufficient inventory',
           data: {
             available_inventory: (product?.inventory || 0) - (existingItem.at(0)?.quantity || 0),
           },
-        })
+        }
       }
       updatedQuantity = (existingItem.at(0)?.quantity || 0) + quantity
     }
@@ -86,10 +86,10 @@ export const addToCart = async (
     })
     if (updatedUser) {
       // revalidatePath('/', 'layout')
-      return JSON.stringify({ ok: true, message: 'success', data: updatedUser.cart })
+      return { ok: true, message: 'success', data: updatedUser.cart }
     }
   } catch (error: any) {
     console.log(error)
-    return JSON.stringify({ ok: false, message: error.message, data: null })
+    return { ok: false, message: error.message, data: null }
   }
 }

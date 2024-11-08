@@ -2,7 +2,7 @@ import type { Field } from 'payload'
 import { icons } from 'lucide-react'
 import deepMerge from '@/utilities/deepMerge'
 
-export type LinkAppearances = 'default' | 'outline'
+export type LinkAppearances = 'default' | 'outline' | 'link'
 
 export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
   default: {
@@ -13,14 +13,24 @@ export const appearanceOptions: Record<LinkAppearances, { label: string; value: 
     label: 'Outline',
     value: 'outline',
   },
+  link: {
+    label: 'Link',
+    value: 'link',
+  },
 }
 type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
   overrides?: Record<string, unknown>
+  enumName?: string
 }) => Field
 
-export const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
+export const link: LinkType = ({
+  appearances,
+  disableLabel = false,
+  overrides = {},
+  enumName,
+} = {}) => {
   const linkResult: Field = {
     name: 'link',
     type: 'group',
@@ -35,7 +45,6 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
           width: '50%',
         },
         label: 'Label',
-        // required: true,
       },
       {
         type: 'row',
@@ -101,40 +110,6 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
     },
   ]
 
-  // const displayTypes: Field[] = [
-  //   {
-  //     name: 'label',
-  //     type: 'text',
-  //     admin: {
-  //       width: '50%',
-  //       condition: (data, siblingData) => {
-  //         console.log(siblingData)
-  //         return siblingData?.display === 'text'
-  //       },
-  //     },
-  //     label: 'Label',
-  //     // required: true,
-  //   },
-  //   {
-  //     name: 'icon',
-  //     type: 'select',
-  //     options: iconNames.map((iconName) => {
-  //       return { value: iconName.toLowerCase(), label: iconName }
-  //     }),
-
-  //     admin: {
-  //       width: '50%',
-  //       condition: (data, siblingData) => {
-  //         console.log(siblingData)
-  //         return siblingData?.display === 'icon'
-  //       },
-  //     },
-  //     label: 'Icon',
-  //     // required: true,
-  //   },
-  //   // IconField(),
-  // ]
-
   if (!disableLabel) {
     linkTypes.map((linkType) => ({
       ...linkType,
@@ -146,50 +121,40 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       type: 'row',
       fields: [...linkTypes],
     })
-    // const display: Field = {
-    //   name: 'display',
-    //   type: 'radio',
-    //   admin: {
-    //     layout: 'horizontal',
-    //     width: '50%',
-    //   },
-    //   defaultValue: 'text',
-    //   options: [
-    //     {
-    //       label: 'Text',
-    //       value: 'text',
-    //     },
-    //     {
-    //       label: 'Icon',
-    //       value: 'icon',
-    //     },
-    //   ],
-    // }
-    // linkResult.fields.push({
-    //   type: 'row',
-    //   fields: [display, ...displayTypes],
-    // })
   } else {
-    // linkResult.fields = [...linkResult.fields, ...linkTypes, display, ...displayTypes]
     linkResult.fields = [...linkResult.fields, ...linkTypes]
   }
 
   if (appearances !== false) {
-    let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
+    let appearanceOptionsToUse = [
+      appearanceOptions.default,
+      appearanceOptions.outline,
+      appearanceOptions.link,
+    ]
 
     if (appearances) {
       appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
     }
-
-    linkResult.fields.push({
-      name: 'appearance',
-      type: 'select',
-      admin: {
-        description: 'Choose how the link should be rendered.',
-      },
-      defaultValue: 'default',
-      options: appearanceOptionsToUse,
-    })
+    enumName
+      ? linkResult.fields.push({
+          name: 'appearance',
+          type: 'select',
+          enumName: enumName,
+          admin: {
+            description: 'Choose how the link should be rendered.',
+          },
+          defaultValue: 'default',
+          options: appearanceOptionsToUse,
+        })
+      : linkResult.fields.push({
+          name: 'appearance',
+          type: 'select',
+          admin: {
+            description: 'Choose how the link should be rendered.',
+          },
+          defaultValue: 'default',
+          options: appearanceOptionsToUse,
+        })
   }
 
   return deepMerge(linkResult, overrides)

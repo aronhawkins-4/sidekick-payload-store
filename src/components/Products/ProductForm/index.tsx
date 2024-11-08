@@ -9,6 +9,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/providers/Cart'
 import { useAuth } from '@/providers/Auth'
+import { addToCart } from '@/actions/addToCart'
+
 // import { useCart } from '@/providers/Cart'
 
 interface ProductFormProps {
@@ -22,7 +24,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product }) => {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-  const { cartItems, setCartItems, addItem } = useCart()
+  const { cartItems, setCartItems, addItem, removeItem } = useCart()
   const { user } = useAuth()
 
   const {
@@ -55,6 +57,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product }) => {
           })
         } else {
           addItem({ product: product, quantity: quantityNum })
+          if (user) {
+            addToCart(product, quantityNum, undefined).then((res) => {
+              console.log(res)
+              if (!res?.ok) {
+                removeItem(product.id)
+                toast({
+                  title: 'Error adding to cart!',
+                  description: `${res?.message}`,
+                  variant: 'destructive',
+                })
+              }
+            })
+          }
           toast({
             title: 'Successfully added to cart!',
             description: `Added ${data.quantity} ${product?.title} to your cart.`,

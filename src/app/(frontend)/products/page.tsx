@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 
-import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { draftMode, headers } from 'next/headers'
@@ -20,15 +19,14 @@ export async function generateStaticParams() {
   return products.docs?.map(({ slug }) => slug)
 }
 
-export default async function Page({ params: { slug = '' } }) {
+export default async function Page({ params }) {
+  const { slug = '' } = await params
   //   const url = '/products/'
   const products = await queryProducts()
-  //   if (!product) return <PayloadRedirects url={url} />
 
   return (
     <div className="max-w-7xl m-auto px-5 md:px-10 py-20 md:py-24 z-10 relative text-white">
       {/* Allows redirects for valid pages too */}
-      {/* <PayloadRedirects disableNotFound url={url} /> */}
       <ProductArchive products={products} />
     </div>
   )
@@ -45,7 +43,7 @@ export default async function Page({ params: { slug = '' } }) {
 // }
 
 const queryProducts = cache(async () => {
-  const { isEnabled: draft } = draftMode()
+  const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayloadHMR({ config: configPromise })
   const result = await payload.find({

@@ -30,6 +30,18 @@ type Props = {
 }
 
 export function serializeLexical({ nodes }: Props): JSX.Element {
+  const formatClasses = {
+    center: 'text-center',
+    left: 'text-left',
+    right: 'text-right',
+    justify: 'text-justify',
+  }
+  const headingSizeClasses = {
+    h1: 'text-[2.5rem] md:text-[3.5rem] lg:text-[4rem]',
+    h2: 'text-[2rem] md:text-[2.5rem]',
+    h3: 'text-[1.5rem] md:text-[2rem]',
+    h4: 'text-[1rem] md:text-[1.5rem]',
+  }
   return (
     <Fragment>
       {nodes?.map((node, index): JSX.Element | null => {
@@ -130,7 +142,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'paragraph': {
               return (
-                <p className="col-start-2" key={index}>
+                <p className={`col-start-2 ${formatClasses[node.format]} `} key={index}>
                   {serializedChildren}
                 </p>
               )
@@ -138,7 +150,10 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             case 'heading': {
               const Tag = node?.tag
               return (
-                <Tag className="col-start-2" key={index}>
+                <Tag
+                  className={`col-start-2 ${headingSizeClasses[Tag]} ${formatClasses[node.format]} `}
+                  key={index}
+                >
                   {serializedChildren}
                 </Tag>
               )
@@ -156,7 +171,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
                 return (
                   <li
                     aria-checked={node.checked ? 'true' : 'false'}
-                    className={` ${node.checked ? '' : ''}`}
+                    className={` ${node.checked ? '' : ''} ${formatClasses[node.format]} `}
                     key={index}
                     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                     role="checkbox"
@@ -176,7 +191,7 @@ export function serializeLexical({ nodes }: Props): JSX.Element {
             }
             case 'quote': {
               return (
-                <blockquote className="col-start-2" key={index}>
+                <blockquote className={`col-start-2 ${formatClasses[node.format]} `} key={index}>
                   {serializedChildren}
                 </blockquote>
               )

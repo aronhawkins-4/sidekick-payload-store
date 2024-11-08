@@ -24,11 +24,11 @@ export const SideCart: React.FC<SideCartProps> = ({ initialItems }) => {
   const total = useTotal()
   const [isOpen, setIsOpen] = useState(false)
 
-  // useEffect(() => {
-  //   if (initialItems) {
-  //     setCartItems(initialItems)
-  //   }
-  // }, [initialItems])
+  useEffect(() => {
+    if (initialItems) {
+      setCartItems(initialItems)
+    }
+  }, [initialItems])
 
   return (
     <>

@@ -3,32 +3,32 @@ import { CartItems, Category, Media, Product } from '@/payload-types'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Trash2 } from 'lucide-react'
 import { removeFromCart } from '@/actions/removeFromCart'
 import { useToast } from '@/components/ui/hooks/use-toast'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { CartItem, useCart } from '@/providers/Cart'
+import { useAuth } from '@/providers/Auth'
 
 interface SideCartItemProps {
   cartItem: CartItem
 }
 
 type SideCartItemFormData = {
+  cartItemID: string
   cartItemProductID: string
 }
 
 export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem }) => {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const router = useRouter()
-  const { removeItem } = useCart()
+  const { removeItem, addItem } = useCart()
+  const { user } = useAuth()
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<SideCartItemFormData>()
 
@@ -36,38 +36,27 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem }) => {
     try {
       setIsSubmitting(true)
       const cartItemProductId = data.cartItemProductID
+      const cartItemId = data.cartItemID
 
       if (cartItemProductId) {
         removeItem(Number(cartItemProductId))
+        if (user) {
+          removeFromCart(Number(cartItemProductId)).then((res) => {
+            console.log(res)
+            if (!res?.ok) {
+              addItem(cartItem)
+              toast({
+                title: 'Error removing to cart!',
+                description: `${res?.message}`,
+                variant: 'destructive',
+              })
+            }
+          })
+        }
         toast({
           title: 'Removed from cart!',
           description: `Removed ${product?.title} from your cart.`,
         })
-        // const response = await removeFromCart(cartItemProductId)
-        // if (response) {
-        //   const parsedResponse = JSON.parse(response)
-        //   console.log(parsedResponse)
-        //   if (parsedResponse.ok && parsedResponse.message === 'success' && parsedResponse.data) {
-        //     switch (parsedResponse.message) {
-        //       case 'no-user':
-        //       case 'success':
-        //         toast({
-        //           title: 'Removed from cart!',
-        //           description: `Removed ${product?.title} from your cart.`,
-        //         })
-        //         const updatedCartItems = cartItems?.filter((cartItem) => {
-        //           return (cartItem.product as Product)?.id !== product.id
-        //         })
-        //         setCartItems(updatedCartItems || [])
-        //         break
-        //     }
-        //   } else {
-        //     toast({
-        //       title: 'Something went wrong.',
-        //       variant: 'destructive',
-        //     })
-        //   }
-        // }
       }
       setIsSubmitting(false)
     } catch (error: any) {
@@ -78,10 +67,6 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem }) => {
       })
     }
   })
-
-  useEffect(() => {
-    console.log(product)
-  }, [])
 
   if (!cartItem.product) {
     return
@@ -111,6 +96,7 @@ export const SideCartItem: React.FC<SideCartItemProps> = ({ cartItem }) => {
           {...register('cartItemProductID')}
           value={(cartItem.product as Product)?.id || undefined}
         />
+        <input type="hidden" {...register('cartItemID')} value={cartItem?.id || undefined} />
         <button type="submit">
           <Trash2 size={16} />
         </button>

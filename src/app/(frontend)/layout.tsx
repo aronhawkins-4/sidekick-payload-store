@@ -22,14 +22,14 @@ import { getMeUser } from '@/utilities/getMeUser'
 import { CartItems } from '@/payload-types'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled } = draftMode()
-  const payload = await getPayloadHMR({ config: configPromise })
-  const { user } = await getMeUser()
-  let initialCartItems: CartItems | undefined = undefined
-  if (user) {
-    const cartItems = user.cart?.items
-    initialCartItems = cartItems
-  }
+  // const { isEnabled } = await draftMode()
+  // const payload = await getPayloadHMR({ config: configPromise })
+  // const { user } = await getMeUser()
+  // let initialCartItems: CartItems | undefined = undefined
+  // if (user) {
+  //   const cartItems = user.cart?.items
+  //   initialCartItems = cartItems
+  // }
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -43,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <LivePreviewListener />
           <Header />
           {children}
-          <SideCart initialItems={initialCartItems} />
+          {/* <SideCart initialItems={initialCartItems} /> */}
           <Toaster />
           <Footer />
         </Providers>

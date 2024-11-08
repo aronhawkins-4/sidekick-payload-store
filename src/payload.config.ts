@@ -3,15 +3,20 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
-import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+// import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { s3Storage } from '@payloadcms/storage-s3'
 import {
+  AlignFeature,
   BoldFeature,
   FixedToolbarFeature,
   HeadingFeature,
+  IndentFeature,
   ItalicFeature,
   LinkFeature,
+  ParagraphFeature,
+  TreeViewFeature,
+  UnorderedListFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp' // editor-import
@@ -76,7 +81,7 @@ export default buildConfig({
           height: 900,
         },
       ],
-      collections: ['pages', 'products'],
+      collections: ['pages'],
     },
   },
   // This config helps us configure global or default features that the other editors can inherit
@@ -86,6 +91,10 @@ export default buildConfig({
         UnderlineFeature(),
         BoldFeature(),
         ItalicFeature(),
+        AlignFeature(),
+        UnorderedListFeature(),
+        IndentFeature(),
+        ParagraphFeature(),
         LinkFeature({
           enabledCollections: ['pages', 'products'],
           fields: ({ defaultFields }) => {
@@ -130,28 +139,28 @@ export default buildConfig({
   ],
   globals: [Header, Footer],
   plugins: [
-    redirectsPlugin({
-      collections: ['pages', 'products'],
-      overrides: {
-        // @ts-expect-error
-        fields: ({ defaultFields }) => {
-          return defaultFields.map((field) => {
-            if ('name' in field && field.name === 'from') {
-              return {
-                ...field,
-                admin: {
-                  description: 'You will need to rebuild the website when changing this field.',
-                },
-              }
-            }
-            return field
-          })
-        },
-        hooks: {
-          afterChange: [revalidateRedirects],
-        },
-      },
-    }),
+    // redirectsPlugin({
+    //   collections: ['pages', 'products'],
+    //   overrides: {
+
+    //     fields: ({ defaultFields }) => {
+    //       return defaultFields.map((field) => {
+    //         if ('name' in field && field.name === 'from') {
+    //           return {
+    //             ...field,
+    //             admin: {
+    //               description: 'You will need to rebuild the website when changing this field.',
+    //             },
+    //           }
+    //         }
+    //         return field
+    //       })
+    //     },
+    //     hooks: {
+    //       afterChange: [revalidateRedirects],
+    //     },
+    //   },
+    // }),
     nestedDocsPlugin({
       collections: ['categories'],
     }),
@@ -191,15 +200,15 @@ export default buildConfig({
           prefix: 'media',
         },
       },
-      bucket: process.env.SUPABASE_S3_BUCKET || '',
+      bucket: process.env.S3_BUCKET || '',
       config: {
         forcePathStyle: true,
-        endpoint: process.env.SUPABASE_S3_ENDPOINT || '',
+        endpoint: process.env.S3_ENDPOINT || '',
         credentials: {
-          accessKeyId: process.env.SUPABASE_S3_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.SUPABASE_S3_SECRET_ACCESS_KEY || '',
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
         },
-        region: process.env.SUPABASE_S3_REGION || '',
+        region: process.env.S3_REGION || '',
       },
     }),
   ],
